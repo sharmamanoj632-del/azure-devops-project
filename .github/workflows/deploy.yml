@@ -11,14 +11,19 @@ jobs:
 
     steps:
       - name: Deploy via SSH
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.0.0
         with:
-          host: 20.244.0.141
-          username: azureuser
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
+          port: 22
           script: |
-            cd ~/myapp
+            cd ~/myapp || exit 1
             git pull origin main
+
+            # Check docker
+            docker --version || (echo "Docker not installed" && exit 1)
+
             docker build -t manoj-app .
             docker stop manoj-container || true
             docker rm manoj-container || true
