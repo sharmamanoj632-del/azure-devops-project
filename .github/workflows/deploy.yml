@@ -10,17 +10,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Deploy via SSH
-      uses: appleboy/ssh-action@master
-      with:
-        host: http://20.244.0.141/
-        username: azureuser
-        key: ${{ secrets.SSH_KEY }}
-        script: |
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: 20.244.0.141
+          username: azureuser
+          key: ${{ secrets.SSH_KEY }}
           script: |
-  cd ~/myapp
-  git pull origin main
-  docker build -t manoj-app .
-  docker stop manoj-container || true
-  docker rm manoj-container || true
-  docker run -d -p 80:80 --name manoj-container manoj-app
+            cd ~/myapp
+            git pull origin main
+            docker build -t manoj-app .
+            docker stop manoj-container || true
+            docker rm manoj-container || true
+            docker run -d -p 80:80 --name manoj-container manoj-app
